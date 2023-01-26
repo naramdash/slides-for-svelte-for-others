@@ -1,0 +1,111 @@
+---
+function safeUrl(url: string) {
+  return url == null || url == "" ? "/" : url
+}
+
+type Post = {
+  url: string,
+  frontmatter: { title: string },
+  getHeadings: unknown,
+  file: unknown,
+  Content: unknown,
+}
+
+const posts = (await Astro.glob("../pages/*.md*")) as Post[];
+const currentPathname = Astro.url.pathname
+const currentIndex = posts.findIndex(p => safeUrl(p.url) === currentPathname)!
+// const current = posts[currentIndex]
+const prev = currentIndex === 0 ? null : posts[currentIndex - 1]
+const next = currentIndex === posts.length - 1 ? null : posts[currentIndex + 1]
+
+---
+<nav>
+    {
+      prev ? (
+        <a href={safeUrl(prev.url)}>
+          <span class="left direction">{'<'} Prev</span>
+          <span class="left title">{prev.frontmatter.title}</span>
+        </a>
+      ): (
+      <div>
+        <span class="left direction">{'<'} Prev</span>
+        <span class="left title">End of Content</span>
+      </div>
+      )
+    }
+  <select name="pages">
+    {
+      posts.map(post => (<option selected={safeUrl(post.url) === currentPathname} value={safeUrl(post.url)}>{post.frontmatter.title}</option>))
+    }
+  </select>
+  {
+    next ? (
+      <a href={safeUrl(next.url)}>
+        <span class="right direction">Next {'>'}</span>
+        <span class="right title">{next.frontmatter.title}</span>
+      </a>
+    ) : (
+      <div>
+        <span class="right direction">Next {'>'}</span>
+        <span class="right title">End of Content</span>
+      </div>
+    )
+  }
+
+</nav>
+
+<script>
+const selectElement = document.querySelector('nav select[name="pages"]')!
+selectElement.addEventListener("change", (event: Event) => {
+  const pathname = (event?.target as HTMLSelectElement)?.value ?? "/"
+  location.pathname = pathname
+})
+</script>
+
+<style lang="scss">
+nav {
+  position: sticky;
+  top: 1em;
+
+  display: flex;
+  flex-direction: row;
+  gap: 15px;
+}
+
+a, div {
+  border: 1px solid black;
+  border-radius: 5px;
+  padding: 0.5em;
+  color: inherit;
+
+  span {
+    display: block;
+  }
+
+  .direction {
+    font-size: smaller;
+    font-weight: lighter;
+  }
+
+  .title {
+    font-size: larger;
+  }
+
+  .left {
+    text-align: left;
+  }
+
+  .right {
+    text-align: right;
+  }
+}
+
+div {
+  background-color: darkgrey;
+}
+
+select {
+  flex: 1;
+  font-size: xx-large;
+}
+</style>
