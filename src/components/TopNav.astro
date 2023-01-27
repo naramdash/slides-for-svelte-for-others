@@ -1,6 +1,7 @@
 ---
+const base = "/slides-for-svelte-for-others"
 function safeUrl(url: string) {
-  return url == null || url == "" ? "/" : url
+  return url == null || url === base ? `${base}/` : url
 }
 
 type Post = {
@@ -17,6 +18,8 @@ const currentIndex = posts.findIndex(p => safeUrl(p.url) === currentPathname)!
 // const current = posts[currentIndex]
 const prev = currentIndex === 0 ? null : posts[currentIndex - 1]
 const next = currentIndex === posts.length - 1 ? null : posts[currentIndex + 1]
+
+console.log(posts.map(p => p.url))
 
 ---
 <nav>
