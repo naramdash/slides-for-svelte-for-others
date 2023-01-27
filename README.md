@@ -13,13 +13,12 @@
     2. Reactivity
 - slide-05-props-and-context.mdx 상태의 전파
     3. Props
+        6. Bindings
     15. Context API
 - slide-06-html-logics.mdx  HTML 조작
     4. Logic
 - slide-07-event-handling.mdx 이벤트 처리
     5. Events
-- slide-08-two-way-binding.mdx 양방향 바인딩
-    6. Bindings
 - slide-09-lifecycle.mdx 컴포넌트 생애주기
     7. Lifecycle
 - slide-10-low-level-logic-reusability.mdx Element 수준 코드 재사용

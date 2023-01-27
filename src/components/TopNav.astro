@@ -30,13 +30,13 @@ const next = currentIndex === posts.length - 1 ? null : posts[currentIndex + 1]
       ): (
       <div>
         <span class="left direction">{'<'} Prev</span>
-        <span class="left title">End of Content</span>
+        <span class="left title">Start of Content</span>
       </div>
       )
     }
   <select name="pages">
     {
-      posts.map((post, i) => (<option selected={safeUrl(post.url) === currentPathname} value={safeUrl(post.url)}>{`(${i + 1}/${posts.length})`} {post.frontmatter.title}</option>))
+      posts.map((post, i) => (<option selected={safeUrl(post.url) === currentPathname} value={safeUrl(post.url)}>{i.toString().padStart(2, '0')} - {post.frontmatter.title}</option>))
     }
   </select>
   {
@@ -111,5 +111,9 @@ div {
 select {
   flex: 1;
   font-size: xx-large;
+
+  option {
+    font-size: 1rem;
+  }
 }
 </style>

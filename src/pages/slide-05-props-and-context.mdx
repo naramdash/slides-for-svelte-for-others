@@ -3,4 +3,138 @@ layout: '../layouts/Layout.astro'
 title: '상태의 전파'
 ---
 
+import ComponentAndCode from '../components/ComponentAndCode.astro'
+import App from '../components/slide-05/App.svelte'
+import App2 from '../components/slide-05/App2.svelte'
+
 # {frontmatter.title}
+
+props & context
+
+## Prop
+
+<ComponentAndCode>
+    <App slot='component' client:visible />
+    
+    <div>
+        ```svelte
+        // App.svelte
+        <script>
+        import Info from "./Info.svelte";
+        
+        const pkg = {
+          name: "svelte",
+          version: 3,
+          speed: "blazing",
+          website: "https://svelte.dev",
+        };
+        </script>
+        
+        <Info {...pkg} />
+        ```
+
+        ```svelte
+        // Info.svelte
+        <script>
+          export let name;
+          export let version;
+          export let speed;
+          export let website;
+        </script>
+        
+        <p>
+          The <code>{name}</code> package is {speed} fast. Download version {version} from
+          <a href="https://www.npmjs.com/package/{name}">npm</a>
+          and <a href={website}>learn more here</a>
+        </p>
+        ```
+    </div>
+
+</ComponentAndCode>
+
+### export 
+
+### spread
+
+### two-way binding 
+
+## context
+
+
+<ComponentAndCode>
+    <App2 slot='component' client:visible />
+    
+    <div>
+        ```svelte
+        // App2.svelte
+        <script>
+          import ObjectContext from "./ObjectContext.svelte";
+          import ObjectFieldInfo from "./ObjectFieldInfo.svelte";
+        
+          const obj = {
+            field1: "YES",
+            field2: "YESS",
+            field3: "YESSS",
+          };
+        </script>
+        
+        <ObjectContext {obj}>
+          <ObjectFieldInfo fieldName="field1" />
+          <ObjectFieldInfo fieldName="field2" />
+          <ObjectFieldInfo fieldName="field3" />
+        </ObjectContext>
+        ```
+
+        ```svelte
+        // ObjectContext.svelte
+        <script lang="ts">
+          import { setContext } from "svelte";
+        
+          export let obj = {};
+        
+          setContext("provided-object", {
+            getObject(propertyName: string) {
+              // @ts-ignore
+              return obj[propertyName];
+            },
+          });
+        </script>
+        
+        <slot />
+        ```
+
+        ```svelte
+        // ObjectFieldInfo.svelte
+        <script lang="ts">
+          import { getContext } from "svelte";
+        
+          export let fieldName: string;
+        
+          const obj = getContext("provided-object");
+        
+          // @ts-ignore
+          $: fieldValue = obj.getObject(fieldName);
+        </script>
+        
+        <label>
+          <span>
+            {fieldName}
+          </span>:
+          <output>{fieldValue}</output>
+        </label>
+        
+        <style>
+          label {
+            display: block;
+          }
+        </style>
+        ```
+    </div>
+
+</ComponentAndCode>
+
+### caution: resource from otherwhere
+
+... use method
+
+<iframe width="100%" height="800px" src="https://svelte.dev/tutorial/context-api" />

@@ -3,4 +3,68 @@ layout: '../layouts/Layout.astro'
 title: 'CSS'
 ---
 
+import ComponentAndCode from '../components/ComponentAndCode.astro'
+import App from '../components/slide-03/App.svelte'
+
 # {frontmatter.title}
+
+<ComponentAndCode>
+    <App slot='component' client:visible />
+    
+
+    <div>
+        ```svelte
+        // App.svelte
+        <script>
+          let current = "foo";
+        </script>
+        
+        <button
+          class={current === "foo" ? "selected" : ""}
+          on:click={() => (current = "foo")}>foo</button
+        >
+        
+        <button class:selected={current === "bar"} on:click={() => (current = "bar")}
+          >bar</button
+        >
+        
+        <button
+          class={current === "baz" ? "selected" : ""}
+          on:click={() => (current = "baz")}>baz</button
+        >
+        
+        <style>
+          button {
+            display: block;
+          }
+        
+          .selected {
+            background-color: #ff3e00;
+            color: white;
+          }
+        </style>
+        ```
+    </div>
+
+</ComponentAndCode>
+
+## CSS class
+
+### class with expression
+
+### directive
+
+### shorthand
+
+## inline css
+
+### variable
+
+```tsx
+function Component() {
+  const style = { "--my-css-var": 10 } as React.CSSProperties;
+  return <div style={style}>...</div>
+}
+```
+
+### directive
