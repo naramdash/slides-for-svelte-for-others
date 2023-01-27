@@ -1,4 +1,4 @@
-<div>
+<div class='container'>
   <div>
     <h3>Component Runtime</h3>
     <div class="component-container">
@@ -6,16 +6,21 @@
     </div>
   </div>
 
-  <div>
+  <div class='code-container'>
     <h3>Component Code</h3>
     <slot></slot>
   </div>
 </div>
 
 <style lang="scss">
-div {
+.container {
   background-color: cadetblue;
   padding: 0.5em;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
 
   h3 {
     margin: 0
@@ -25,6 +30,10 @@ div {
     padding: 0;
     border: 2px solid black;
     background-color: white;
+  }
+
+  .code-container {
+    flex: 1
   }
 }
 </style>
