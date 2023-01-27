@@ -1,3 +1,5 @@
+[![Deploy to GitHub Pages](https://github.com/naramdash/slides-for-svelte-for-others/actions/workflows/deploy.yml/badge.svg)](https://github.com/naramdash/slides-for-svelte-for-others/actions/workflows/deploy.yml)
+
 # Welcome to [Astro](https://astro.build)
 
 [![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/withastro/astro/tree/latest/examples/basics)
