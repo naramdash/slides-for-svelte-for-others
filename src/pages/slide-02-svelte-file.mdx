@@ -2,5 +2,69 @@
 layout: '../layouts/Layout.astro'
 title: '*.svelte 파일'
 ---
+import ComponentAndCode from '../components/ComponentAndCode.astro'
+import App from '../components/slide-01/App.svelte'
 
 # {frontmatter.title}
+
+<ComponentAndCode>
+    <App slot='component' client:visible />
+    
+
+    <div>
+        ```svelte
+        // App.svelte
+        <script>
+          import Nested from "./Nested.svelte";
+        
+          let width = 500;
+          const src = `https://picsum.photos/${width}`;
+        
+          console.log("GO~ SHOT!");
+        </script>
+        
+        <label>
+          <input type="range" min="200" max="500" bind:value={width} />
+        </label>
+        
+        <Nested {src} {width} />
+        ```
+
+        ```svelte
+        // Nested.svelte
+        <script lang="ts">
+          export let src: string;
+          export let width: number;
+          export let alternative = "sample image by random";
+        </script>
+        
+        <figure>
+          <img {src} {width} alt={alternative} loading="lazy" />
+          <figcaption>
+            {alternative}
+          </figcaption>
+        </figure>
+        
+        <style>
+          img {
+            border: 3px solid red;
+          }
+        </style>
+        ```
+    </div>
+
+</ComponentAndCode>
+
+## 컴포넌트의 변할 수 있는 상태는 `let`으로 선언
+
+## script는 기본적으로 생성시에만 실행
+
+## 컴포넌트 최상위 엘리먼트가 한개일 필요는 없음
+
+## html에 상태 표현은 `{}`
+
+## 상태를 props, attr에 적용하려면 `{}`
+
+같다면 단축 가능
+
+## style은 기본적으로 component scoped

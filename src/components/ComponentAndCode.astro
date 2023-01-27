@@ -1,0 +1,33 @@
+<div>
+  <div>
+    <h3>Component Runtime</h3>
+    <div class="component-container">
+      <slot name="component"></slot>
+    </div>
+  </div>
+
+  <div>
+    <h3>Component Code</h3>
+    <slot></slot>
+  </div>
+</div>
+
+<style lang="scss">
+div {
+  background-color: cadetblue;
+  padding: 0.5em;
+
+  h3 {
+    margin: 0
+  }
+
+  .component-container {
+    padding: 0;
+    border: 2px dotted black;
+  }
+}
+
+slot {
+  border: 10px dotted blue
+}
+</style>
