@@ -3,10 +3,81 @@ layout: '../layouts/Layout.astro'
 title: 'svelte란?'
 ---
 
+import benchmark from '../content/images/benchmark.png'
+
 # {frontmatter.title}
 
-## svelte의 핵심 키워드
+## svelte 핵심 키워드 === COMPILER BASED
+
+그렇다는 것은...
+
+- svelte 코드는 브라우저에서 직접 실행될 수 없음 (cdn 사용 불가)
+- svelte만의 변환 과정을 거침
+- 런타임에 svelte 라이브러리가 포함되는 것이 아님
+
+이를 통해...
 
 - Write less code
-- No virtual DOM
-- Truly reactive
+- Truly reactive 
+
+컴파일 타임에서 일반적인 javascript 코드에 reactivity 추가하기 때문!
+
+
+## 그리고 [No virtual DOM](https://svelte.dev/blog/virtual-dom-is-pure-overhead)
+
+- <q>diffing isn't free</q>
+- <q>Virtual DOM is pure overhead</q>
+- <q>virtual DOM isn't a feature, It's a means to an end.</q>
+
+Q) VDOM, 惡인가? A) 아니다
+
+실제로 현재 VDOM을 사용하는 vue에 비해 svelte가 렌더링 종합점수가 낮게 나옴
+
+옳고 그름, 상황과 기준을 떠나서, VDOM이 없다는 것은 js runtime이 굉장히 축소될 수 있다는 것
+
+
+
+## [Benchmark based on Chrome 109](https://krausest.github.io/js-framework-benchmark/2023/table_chrome_109.0.5414.87.html)
+
+<img src={benchmark} alt="benchmark of major frameworks"/>
+
+```json
+{
+  "frameworks": [
+    "keyed/angular",
+    "keyed/blazor-wasm",
+    "keyed/blazor-wasm-aot",
+    "keyed/ember",
+    "keyed/lit",
+    "keyed/preact",
+    "keyed/react-hooks",
+    "keyed/solid",
+    "keyed/svelte",
+    "keyed/vanillajs",
+    "keyed/vanillajs-1",
+    "keyed/vanillajs-wc",
+    "keyed/vue"
+  ],
+  "benchmarks": [
+    "01_run1k",
+    "02_replace1k",
+    "03_update10th1k_x16",
+    "04_select1k",
+    "05_swap1k",
+    "06_remove-one-1k",
+    "07_create10k",
+    "08_create1k-after1k_x2",
+    "09_clear1k_x8",
+    "21_ready-memory",
+    "22_run-memory",
+    "23_update5-memory",
+    "25_run-clear-memory",
+    "26_run-10k-memory",
+    "31_startup-ci",
+    "34_startup-totalbytes"
+  ],
+  "displayMode": 1,
+  "categories": [1, 2, 3, 4, 5]
+}
+
+```
