@@ -36,7 +36,7 @@ const next = currentIndex === posts.length - 1 ? null : posts[currentIndex + 1]
     }
   <select name="pages">
     {
-      posts.map(post => (<option selected={safeUrl(post.url) === currentPathname} value={safeUrl(post.url)}>{post.frontmatter.title}</option>))
+      posts.map((post, i) => (<option selected={safeUrl(post.url) === currentPathname} value={safeUrl(post.url)}>{`(${i + 1}/${posts.length})`} {post.frontmatter.title}</option>))
     }
   </select>
   {
