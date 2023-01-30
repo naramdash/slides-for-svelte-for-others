@@ -5,5 +5,260 @@ title: '컴포넌트 생애주기'
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
 import App from '../components/slide-08/App.svelte'
+import App2 from '../components/slide-08/App2.svelte'
+import App3 from '../components/slide-08/App3.svelte'
+import App4 from '../components/slide-08/App4.svelte'
 
 # {frontmatter.title}
+
+## onMount
+
+<ComponentAndCode>
+<App slot='component' client:load />
+
+```svelte
+<script>
+  import { onMount } from "svelte";
+
+  let photos = [];
+
+  onMount(async () => {
+    const res = await fetch(`/tutorial/api/album`);
+    photos = await res.json();
+
+    return () => {
+      console.log("when destoryed")
+    }
+  });
+</script>
+
+<h1>Photo album</h1>
+
+<div class="photos">
+  {#each photos as photo}
+    <figure>
+      <img src={photo.thumbnailUrl} alt={photo.title} />
+      <figcaption>{photo.title}</figcaption>
+    </figure>
+  {:else}
+    <!-- this block renders when photos.length === 0 -->
+    <p>loading...</p>
+  {/each}
+</div>
+
+<style>
+  .photos {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-gap: 8px;
+  }
+
+  figure,
+  img {
+    width: 100%;
+    margin: 0;
+  }
+</style>
+```
+</ComponentAndCode>
+
+> If the onMount callback returns a function, that function will be called when the component is destroyed.
+
+```js
+onMount(async () => {
+  const res = await fetch(`/tutorial/api/album`);
+  photos = await res.json();
+
+  return () => {
+    console.log("when destoryed")
+  }
+});
+```
+
+## onDestroyed
+
+<ComponentAndCode>
+<App2 slot='component' client:load />
+
+```svelte
+// App2.svelte
+<script>
+  import Timer from "./Timer.svelte";
+
+  let open = true;
+  let seconds = 0;
+
+  const toggle = () => (open = !open);
+  const handleTick = () => (seconds += 1);
+</script>
+
+<div>
+  <button on:click={toggle}>{open ? "Close" : "Open"} Timer</button>
+  <p>
+    The Timer component has been open for
+    {seconds}
+    {seconds === 1 ? "second" : "seconds"}
+  </p>
+  {#if open}
+    <Timer callback={handleTick} />
+  {/if}
+</div>
+```
+
+```svelte
+// Timer.svelte
+<script>
+  import { onInterval } from "./utils.js";
+
+  export let callback;
+  export let interval = 1000;
+
+  onInterval(callback, interval);
+</script>
+
+<p>
+  This component executes a callback every
+  {interval} millisecond{interval === 1 ? "" : "s"}
+</p>
+
+<style>
+  p {
+    border: 1px solid blue;
+    padding: 5px;
+  }
+</style>
+```
+
+```js
+// utils.js
+import { onDestroy } from "svelte";
+
+export function onInterval(callback, milliseconds) {
+  const interval = setInterval(callback, milliseconds);
+
+  onDestroy(() => {
+    clearInterval(interval);
+  });
+}
+```
+</ComponentAndCode>
+
+> While it's important to **call lifecycle functions during the component's initialisation, it doesn't matter where you call them from**. So if we wanted, we could abstract the interval logic into a helper function in utils.js...
+
+```js
+onDestroy(() => {
+  clearInterval(interval);
+});
+```
+
+## beforeUpdate & afterUpdate
+
+<ComponentAndCode>
+<App3 slot="component" client:load />
+
+```svelte
+<script>
+  import { Eliza } from "./Eliza";
+  import { beforeUpdate, afterUpdate } from "svelte";
+
+  let div;
+  let autoscroll;
+
+  beforeUpdate(() => {
+    autoscroll =
+      div && div.offsetHeight + div.scrollTop > div.scrollHeight - 20;
+  });
+
+  afterUpdate(() => {
+    if (autoscroll) div.scrollTo(0, div.scrollHeight);
+  });
+
+  const eliza = new Eliza();
+
+  let comments = [
+    { author: "eliza", text: "Please tell me what's been bothering you." },
+  ];
+
+  function handleKeydown(event) {
+    // ...
+  }
+</script>
+
+<div class="chat">
+  <h1>Eliza</h1>
+
+  <div class="scrollable" bind:this={div}>
+    {#each comments as comment}
+      <article class={comment.author}>
+        <span>{comment.text}</span>
+      </article>
+    {/each}
+  </div>
+
+  <input on:keydown={handleKeydown} />
+</div>
+```
+</ComponentAndCode>
+
+> They're useful for **doing things imperatively** that are difficult to achieve in a purely state-driven way, like updating the scroll position of an element.
+
+```js
+beforeUpdate(() => {
+  autoscroll =
+    div && div.offsetHeight + div.scrollTop > div.scrollHeight - 20;
+});
+
+afterUpdate(() => {
+  if (autoscroll) div.scrollTo(0, div.scrollHeight);
+});
+```
+
+## tick
+
+<ComponentAndCode>
+<App4 slot='component' client:load />
+
+```svelte
+<script>
+  import { tick } from "svelte";
+
+  let text = `Select some text and hit the tab key to toggle uppercase`;
+
+  async function handleKeydown(event) {
+    if (event.key !== "Tab") return;
+
+    event.preventDefault();
+
+    const { selectionStart, selectionEnd, value } = this;
+    const selection = value.slice(selectionStart, selectionEnd);
+
+    const replacement = /[a-z]/.test(selection)
+      ? selection.toUpperCase()
+      : selection.toLowerCase();
+
+    text =
+      value.slice(0, selectionStart) + replacement + value.slice(selectionEnd);
+
+    await tick();
+    // this had no effect, because the DOM hasn't updated yet
+    this.selectionStart = selectionStart;
+    this.selectionEnd = selectionEnd;
+  }
+</script>
+
+<textarea value={text} on:keydown={handleKeydown} />
+```
+
+</ComponentAndCode>
+
+>  in Svelte, it doesn't update the DOM immediately. Instead, it **waits until the next microtask to see** if there are any other changes that need to be applied, including in other components.
+
+```js
+await tick();
+// this had no effect, because the DOM hasn't updated yet
+this.selectionStart = selectionStart;
+this.selectionEnd = selectionEnd;
+```
+
+> The tick function returns a promise that resolves as soon as any **pending state changes have been applied to the DOM** (or immediately, if there are no pending state changes).

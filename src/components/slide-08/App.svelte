@@ -1,5 +1,16 @@
 <script>
+  import { onMount } from "svelte";
+
   let photos = [];
+
+  onMount(async () => {
+    const res = await fetch(`/tutorial/api/album`);
+    photos = await res.json();
+
+    return () => {
+      console.log("when destoryed");
+    };
+  });
 </script>
 
 <h1>Photo album</h1>

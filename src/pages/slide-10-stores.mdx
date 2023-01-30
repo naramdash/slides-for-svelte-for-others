@@ -1,0 +1,210 @@
+---
+layout: '../layouts/Layout.astro'
+title: '앱 전역상태'
+---
+
+import ComponentAndCode from '../components/ComponentAndCode.astro'
+import App from '../components/slide-10/App.svelte'
+import App2 from '../components/slide-10/App2.svelte'
+import App3 from '../components/slide-10/App3.svelte'
+import App4 from '../components/slide-10/App4.svelte'
+
+# {frontmatter.title}
+
+## Writable 
+
+<ComponentAndCode>
+<App slot='component' client:load />
+
+```ts
+import { writable } from "svelte/store";
+
+export const count = writable(0);
+```
+
+```svelte
+// App.svelte
+<script lang="ts">
+  import { count } from "./stores";
+  import Incrementer from "./Incrementer.svelte";
+  import Decrementer from "./Decrementer.svelte";
+  import { onDestroy } from "svelte";
+
+  let countValue: number;
+
+  const unsubscribeCount = count.subscribe((value) => {
+    countValue = value;
+  });
+
+  onDestroy(() => {
+    unsubscribeCount();
+  });
+</script>
+
+<h1>The count is {countValue}</h1>
+
+<Incrementer />
+<Decrementer />
+```
+
+```svelte
+<script>
+  import { count } from "./stores.ts";
+
+  function increment() {
+    count.update((n) => n + 1);
+  }
+</script>
+
+<button on:click={increment}> + </button>
+```
+
+```svelte
+<script>
+  import { count } from "./stores.ts";
+
+  function decrement() {
+    count.update((n) => n - 1);
+  }
+</script>
+
+<button on:click={decrement}> - </button>
+```
+</ComponentAndCode>
+
+must unsubscribe store subscription before destory
+
+```js
+onDestroy(() => {
+  unsubscribeCount();
+});
+```
+
+## Auto-subscription (auto-unsubscribe)
+
+<ComponentAndCode>
+<App2 slot='component' client:load/>
+
+```svelte
+<script>
+  import { count } from "./stores.ts";
+  import Incrementer from "./Incrementer.svelte";
+  import Decrementer from "./Decrementer.svelte";
+
+  $: console.log($count);
+</script>
+
+<h1>The count is {$count}</h1>
+
+<Incrementer />
+<Decrementer />
+```
+</ComponentAndCode>
+
+> **Any name beginning with $ is assumed to refer to a store value.** It's effectively a reserved character — Svelte will prevent you from declaring your own variables with a $ prefix.
+
+`$` for reactives
+
+```js
+<script>
+  import { count } from "./stores.ts";
+
+  $: console.log($count);
+</script>
+
+<h1>The count is {$count}</h1>
+```
+
+## Readable
+
+<ComponentAndCode>
+<App3 slot='component' client:load/>
+
+```ts
+import { readable } from "svelte/store";
+
+export const time = readable(new Date(), function start(set) {
+  const interval = setInterval(() => {
+    set(new Date());
+  }, 1000);
+
+  return function stop() {
+    clearInterval(interval);
+  };
+});
+```
+
+```svelte
+// App3.svelte
+<script>
+  import { time } from "./time-stores.ts";
+
+  const formatter = new Intl.DateTimeFormat("en", {
+    hour12: true,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+</script>
+
+<h1>The time is {formatter.format($time)}</h1>
+```
+</ComponentAndCode>
+
+> a store representing the mouse position or the user's geolocation, and it doesn't make sense to be able to set those **values from 'outside'.**
+
+- first arg: **initial value**
+- second arg: **start function** called when store get first subscriber
+    - arg: **set function**
+    - return: **stop function** called when the last subscriber unsubscribe
+
+
+## Derived
+
+
+<ComponentAndCode>
+<App4 slot='component' client:load/>
+
+```ts
+// time-stores.ts
+import { readable, derived } from "svelte/store";
+
+export const time = readable(new Date(), function start(set) {
+  const interval = setInterval(() => {
+    set(new Date());
+  }, 1000);
+
+  return function stop() {
+    clearInterval(interval);
+  };
+});
+
+const start = new Date();
+
+export const elapsed = derived(time, ($time: Date) =>
+  Math.round(($time.getTime() - start.getTime()) / 1000)
+);
+```
+
+```svelte
+// App4.svelte
+<script>
+  import { time, elapsed } from "./time-stores2.ts";
+
+  const formatter = new Intl.DateTimeFormat("en", {
+    hour12: true,
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+  });
+</script>
+
+<h1>The time is {formatter.format($time)}</h1>
+
+<p>
+  This page has been open for
+  {$elapsed}
+  {$elapsed === 1 ? "second" : "seconds"}
+</p>
+```
+</ComponentAndCode>
