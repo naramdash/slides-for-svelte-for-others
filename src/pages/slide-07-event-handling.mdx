@@ -4,10 +4,116 @@ title: '이벤트 처리'
 ---
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
-import App from '../components/slide-06/App.svelte'
+import App from '../components/slide-07/App.svelte'
+import App2 from '../components/slide-07/App2.svelte'
 
 # {frontmatter.title}
 
-
-
 ## `on:` directive
+
+<ComponentAndCode>
+    <App slot="component" client:load />
+
+    ```svelte
+    <script>
+      function handleClick() {
+        alert('no more alerts')
+      }
+    </script>
+    
+    <button on:click|once={handleClick}>
+    	Click me
+    </button>
+    ```
+</ComponentAndCode>
+
+with **modifiers** *chained*
+
+- `preventDefault` 
+- `stopPropagation` 
+- `passive` 
+- `nonpassive` 
+- `capture` 
+- `once` 
+- `self` 
+- `trusted` 
+- ...
+
+```svelte
+<button on:click|once={handleClick}>
+  Click me
+</button>
+```
+
+## Component Event
+
+<ComponentAndCode>
+    <App2 slot="component" client:load />
+
+```svelte
+// App2.svelte
+<script>
+  import Outer from "./Outer.svelte";
+
+  function handleMessage(event) {
+    alert(event.detail.text);
+  }
+</script>
+
+<Outer on:message={handleMessage} />
+```
+
+```svelte
+// Outer.svelte
+<script>
+  import Inner from "./Inner.svelte";
+</script>
+
+<Inner on:message />
+```
+
+```svelte
+// Inner.svelte
+<script>
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
+  function sayHello() {
+    dispatch("message", {
+      text: "Hello!",
+    });
+  }
+</script>
+
+<button on:click={sayHello}> Click to say hello </button>
+```
+</ComponentAndCode>
+
+state **down** with *props*, 
+
+action **up** with *event*
+
+```svelte
+<script>
+  import { createEventDispatcher } from "svelte";
+
+  const dispatch = createEventDispatcher();
+
+  function sayHello() {
+    dispatch("message", {
+      text: "Hello!",
+    });
+  }
+</script>
+```
+
+## Event Forwarding
+
+```svelte
+<script>
+  import Inner from "./Inner.svelte";
+</script>
+
+<Inner on:message />
+```

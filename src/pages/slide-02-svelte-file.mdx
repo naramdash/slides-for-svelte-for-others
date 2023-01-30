@@ -8,7 +8,7 @@ import App from '../components/slide-02/App.svelte'
 # {frontmatter.title}
 
 <ComponentAndCode>
-    <App slot='component' client:visible />
+    <App slot='component' client:load />
     
 
     <div>
@@ -57,14 +57,48 @@ import App from '../components/slide-02/App.svelte'
 
 ## 컴포넌트의 변할 수 있는 상태는 `let`으로 선언
 
+```js
+let width = 500;
+```
+
 ## script는 기본적으로 생성시에만 실행
+
+```js
+console.log("GO~ SHOT!");
+```
 
 ## 컴포넌트 최상위 엘리먼트가 한개일 필요는 없음
 
-## html에 상태 표현은 `{}`
+```svelte
+<label>
+  <input type="range" min="200" max="500" bind:value={width} />
+</label>
 
+<Nested {src} {width} />
+```
+
+## html에 상태 표현은 `{}`
+```svelte
+<figcaption>
+  {alternative}
+</figcaption>
+```
 ## 상태를 props, attr에 적용하려면 `{}`
 
 같다면 단축 가능
 
+```svelte
+<Nested {src} {width} />
+
+<img {src} {width} alt={alternative} loading="lazy" />
+```
+
 ## style은 기본적으로 component scoped
+
+```svelte
+<style>
+  img {
+    border: 3px solid red;
+  }
+</style>
+```

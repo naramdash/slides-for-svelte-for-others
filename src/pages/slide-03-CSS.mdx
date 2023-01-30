@@ -5,12 +5,12 @@ title: 'CSS'
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
 import App from '../components/slide-03/App.svelte'
+import App2 from '../components/slide-03/App2.svelte'
 
 # {frontmatter.title}
 
 <ComponentAndCode>
-    <App slot='component' client:visible />
-    
+    <App slot='component' client:load />
 
     <div>
         ```svelte
@@ -24,14 +24,11 @@ import App from '../components/slide-03/App.svelte'
           on:click={() => (current = "foo")}>foo</button
         >
         
-        <button class:selected={current === "bar"} on:click={() => (current = "bar")}
-          >bar</button
-        >
+        <button class:selected={current === "bar"} on:click={() => (current = "bar")}>
+          bar
+        </button>
         
-        <button
-          class={current === "baz" ? "selected" : ""}
-          on:click={() => (current = "baz")}>baz</button
-        >
+        <button class:selected on:click={() => (current = "baz")}>baz</button>
         
         <style>
           button {
@@ -52,15 +49,60 @@ import App from '../components/slide-03/App.svelte'
 
 ### class with expression
 
+```svelte
+<button
+  class={current === "foo" ? "selected" : ""}
+  on:click={() => (current = "foo")}>foo</button
+>
+```
+
 ### directive
+
+```svelte
+<button class:selected={current === "bar"} on:click={() => (current = "bar")}>
+```
 
 ### shorthand
 
+```svelte
+<button class:selected on:click={() => (current = "baz")}>baz</button>
+```
+
 ## inline css
+
+<ComponentAndCode>
+    <App2 slot="component" client:load />
+
+    ```svelte
+    <script>
+      let bgOpacity = 0.5;
+      $: color = bgOpacity < 0.6 ? "#000" : "#fff";
+    </script>
+    
+    <input type="range" min="0" max="1" step="0.1" bind:value={bgOpacity} />
+    
+    <p style="color: {color}; --opacity: {bgOpacity};">This is a paragraph.</p>
+    <p style:color style:--opacity={bgOpacity}>This is a paragraph.</p>
+
+    
+    <style>
+      p {
+        font-family: "Comic Sans MS", cursive;
+        background: rgba(255, 62, 0, var(--opacity));
+      }
+    </style>
+    ```
+</ComponentAndCode>
+
 
 ### variable
 
+```svelte
+<p style="color: {color}; --opacity: {bgOpacity};">This is a paragraph.</p>
+```
+
 ```tsx
+// react
 function Component() {
   const style = { "--my-css-var": 10 } as React.CSSProperties;
   return <div style={style}>...</div>
@@ -68,3 +110,7 @@ function Component() {
 ```
 
 ### directive
+
+```svelte
+<p style:color style:--opacity={bgOpacity}>This is a paragraph.</p>
+```

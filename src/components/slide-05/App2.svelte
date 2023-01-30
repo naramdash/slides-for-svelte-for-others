@@ -1,16 +1,14 @@
 <script>
-  import ObjectContext from "./ObjectContext.svelte";
-  import ObjectFieldInfo from "./ObjectFieldInfo.svelte";
+  import Keypad from "./Keypad.svelte";
 
-  const obj = {
-    field1: "YES",
-    field2: "YESS",
-    field3: "YESSS",
-  };
+  let pin;
+  $: view = pin ? pin.replace(/\d(?!$)/g, "•") : "enter your pin";
+
+  function handleSubmit() {
+    alert(`submitted ${pin}`);
+  }
 </script>
 
-<ObjectContext {obj}>
-  <ObjectFieldInfo fieldName="field1" />
-  <ObjectFieldInfo fieldName="field2" />
-  <ObjectFieldInfo fieldName="field3" />
-</ObjectContext>
+<h1 style="color: {pin ? '#333' : '#ccc'}">{view}</h1>
+
+<Keypad bind:value={pin} on:submit={handleSubmit} />

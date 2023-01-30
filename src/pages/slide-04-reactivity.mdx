@@ -11,39 +11,30 @@ import App2 from '../components/slide-04/App2.svelte'
 
 
 <ComponentAndCode>
-    <App slot='component' client:visible />
+    <App slot='component' client:load />
     
     <div>
         ```svelte
-        // App.svelte
         <script>
-          let current = "foo";
+          let count = 0;
+          $: doubled = count * 2;
+        
+          function handleClick() {
+            count += 1;
+          }
+        
+          $: if (count >= 10) {
+            alert("count is dangerously high!");
+            count = 9;
+          }
         </script>
         
-        <button
-          class={current === "foo" ? "selected" : ""}
-          on:click={() => (current = "foo")}>foo</button
-        >
+        <button on:click={handleClick}>
+          Clicked {count}
+          {count === 1 ? "time" : "times"}
+        </button>
         
-        <button class:selected={current === "bar"} on:click={() => (current = "bar")}
-          >bar</button
-        >
-        
-        <button
-          class={current === "baz" ? "selected" : ""}
-          on:click={() => (current = "baz")}>baz</button
-        >
-        
-        <style>
-          button {
-            display: block;
-          }
-        
-          .selected {
-            background-color: #ff3e00;
-            color: white;
-          }
-        </style>
+        <p>{count} doubled is {doubled}</p>
         ```
     </div>
 
@@ -53,21 +44,70 @@ import App2 from '../components/slide-04/App2.svelte'
 
 ### assignment
 
+```js
+function handleClick() {
+  count += 1;
+}
+```
+
 ### caution: array and object
 
 <ComponentAndCode>
-    <App2 slot='component' client:visible />
+    <App2 slot='component' client:load />
     
     <div>
         ```svelte
-        <div>todo</div>
+        <script>
+          let numbers = [1, 2, 3, 4];
+        
+          function addNumberNotWorking() {
+            numbers.push(numbers.length + 1);
+          }
+        
+          function addNumber() {
+            numbers = [...numbers, numbers.length + 1];
+          }
+        
+          $: sum = numbers.reduce((t, n) => t + n, 0);
+        </script>
+        
+        <p>{numbers.join(" + ")} = {sum}</p>
+        
+        <button on:click={addNumberNotWorking}> Add a number (Not Working) </button>
+        <button on:click={addNumber}> Add a number </button>
         ```
     </div>
 
 </ComponentAndCode>
 
+```js
+function addNumberNotWorking() {
+  numbers.push(numbers.length + 1);
+}
+
+function addNumber() {
+  numbers = [...numbers, numbers.length + 1];
+}
+```
+
+> A simple rule of thumb: the updated variable must *directly appear* on the left hand side of the assignment.
+
+**somthing-state**[.~~~~[.~~~~]] **=** **value**
+
 ## $: when state changed
 
 ### computed value
 
+```js
+$: doubled = count * 2;
+$: sum = numbers.reduce((t, n) => t + n, 0);
+```
+
 ### statement
+
+```js
+$: if (count >= 10) {
+  alert("count is dangerously high!");
+  count = 9;
+}
+```

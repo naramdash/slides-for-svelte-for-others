@@ -1,7 +1,7 @@
 <script>
   export let name;
   export let version;
-  export let speed;
+  export let speed = NaN;
   export let website;
 </script>
 

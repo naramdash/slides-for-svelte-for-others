@@ -1,1 +1,18 @@
-<div>todo array and object</div>
+<script>
+  let numbers = [1, 2, 3, 4];
+
+  function addNumberNotWorking() {
+    numbers.push(numbers.length + 1);
+  }
+
+  function addNumber() {
+    numbers = [...numbers, numbers.length + 1];
+  }
+
+  $: sum = numbers.reduce((t, n) => t + n, 0);
+</script>
+
+<p>{numbers.join(" + ")} = {sum}</p>
+
+<button on:click={addNumberNotWorking}> Add a number (Not Working) </button>
+<button on:click={addNumber}> Add a number </button>

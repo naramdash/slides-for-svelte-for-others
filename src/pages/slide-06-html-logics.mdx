@@ -5,6 +5,8 @@ title: 'HTML 조작'
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
 import App from '../components/slide-06/App.svelte'
+import App2 from '../components/slide-06/App2.svelte'
+import App3 from '../components/slide-06/App3.svelte'
 
 # {frontmatter.title}
 
@@ -15,10 +17,107 @@ import App from '../components/slide-06/App.svelte'
 
 ## #if :else_if /else /if
 
+<ComponentAndCode>
+    <App slot="component"/>
+
+    ```svelte
+    <script>
+      let x = 7;
+    </script>
+    
+    {#if x > 10}
+      <p>{x} is greater than 10</p>
+    {:else if 5 > x}
+      {#if 3 > x}
+        <p>{x} is less than 3</p>
+      {:else}
+        <p>{x} is less than 5</p>
+      {/if}
+    {:else}
+      <p>{x} is between 5 and 10</p>
+    {/if}
+    ```
+
+</ComponentAndCode>
+
+
 ## each
 
-### index
+<ComponentAndCode>
+    <App2 slot="component" client:load/>
 
-### keyed
+    ```svelte
+    // App2.svelte
+    <script>
+      import Thing from "./Thing.svelte";
+    
+      let things = [
+        { id: 1, name: "apple" },
+        { id: 2, name: "banana" },
+        { id: 3, name: "carrot" },
+        { id: 4, name: "doughnut" },
+        { id: 5, name: "egg" },
+      ];
+    
+      function handleClick() {
+        things = things.slice(1);
+      }
+    </script>
+    
+    <button on:click={handleClick}> 
+      Remove first thing 
+    </button>
+    
+    {#each things as thing, index (thing.id)}
+      <Thing name={thing.name} {index} />
+    {/each}
+    ```
+
+</ComponentAndCode>
+
+
+### index and keyed
+```svelte
+{#each things as thing, index (thing.id)}
+  <Thing name={thing.name} {index} />
+{/each}
+```
 
 ## await
+
+<ComponentAndCode>
+    <App3 slot="component" client:load/>
+
+    ```svelte
+    // App3.svelte
+    <script>
+      async function getRandomNumber() {
+        const res = await fetch(`/tutorial/random-number`);
+        const text = await res.text();
+    
+        if (res.ok) {
+          return text;
+        } else {
+          throw new Error(text);
+        }
+      }
+    
+      let promise = getRandomNumber();
+    
+      function handleClick() {
+        promise = getRandomNumber();
+      }
+    </script>
+    
+    <button on:click={handleClick}> generate random number </button>
+    
+    {#await promise}
+      <p>...waiting</p>
+    {:then number}
+      <p>The number is {number}</p>
+    {:catch error}
+      <p style="color: red">{error.message}</p>
+    {/await}
+    ```
+
+</ComponentAndCode>
