@@ -4,7 +4,7 @@
   let photos = [];
 
   onMount(async () => {
-    const res = await fetch(`/tutorial/api/album`);
+    const res = await fetch(`/slides-for-svelte-for-others/tutorial/api/album`);
     photos = await res.json();
 
     return () => {

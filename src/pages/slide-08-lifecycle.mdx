@@ -1,13 +1,13 @@
 ---
-layout: '../layouts/Layout.astro'
-title: '컴포넌트 생애주기'
+layout: "../layouts/Layout.astro"
+title: "컴포넌트 생애주기"
 ---
 
-import ComponentAndCode from '../components/ComponentAndCode.astro'
-import App from '../components/slide-08/App.svelte'
-import App2 from '../components/slide-08/App2.svelte'
-import App3 from '../components/slide-08/App3.svelte'
-import App4 from '../components/slide-08/App4.svelte'
+import ComponentAndCode from "../components/ComponentAndCode.astro";
+import App from "../components/slide-08/App.svelte";
+import App2 from "../components/slide-08/App2.svelte";
+import App3 from "../components/slide-08/App3.svelte";
+import App4 from "../components/slide-08/App4.svelte";
 
 # {frontmatter.title}
 
@@ -23,7 +23,7 @@ import App4 from '../components/slide-08/App4.svelte'
   let photos = [];
 
   onMount(async () => {
-    const res = await fetch(`/tutorial/api/album`);
+    const res = await fetch(`/slides-for-svelte-for-others/tutorial/api/album`);
     photos = await res.json();
 
     return () => {
@@ -61,18 +61,19 @@ import App4 from '../components/slide-08/App4.svelte'
   }
 </style>
 ```
+
 </ComponentAndCode>
 
 > If the onMount callback returns a function, that function will be called when the component is destroyed.
 
 ```js
 onMount(async () => {
-  const res = await fetch(`/tutorial/api/album`);
+  const res = await fetch(`/slides-for-svelte-for-others/tutorial/api/album`);
   photos = await res.json();
 
   return () => {
-    console.log("when destoryed")
-  }
+    console.log("when destoryed");
+  };
 });
 ```
 
@@ -142,6 +143,7 @@ export function onInterval(callback, milliseconds) {
   });
 }
 ```
+
 </ComponentAndCode>
 
 > While it's important to **call lifecycle functions during the component's initialisation, it doesn't matter where you call them from**. So if we wanted, we could abstract the interval logic into a helper function in utils.js...
@@ -199,14 +201,14 @@ onDestroy(() => {
   <input on:keydown={handleKeydown} />
 </div>
 ```
+
 </ComponentAndCode>
 
 > They're useful for **doing things imperatively** that are difficult to achieve in a purely state-driven way, like updating the scroll position of an element.
 
 ```js
 beforeUpdate(() => {
-  autoscroll =
-    div && div.offsetHeight + div.scrollTop > div.scrollHeight - 20;
+  autoscroll = div && div.offsetHeight + div.scrollTop > div.scrollHeight - 20;
 });
 
 afterUpdate(() => {
@@ -252,7 +254,7 @@ afterUpdate(() => {
 
 </ComponentAndCode>
 
->  in Svelte, it doesn't update the DOM immediately. Instead, it **waits until the next microtask to see** if there are any other changes that need to be applied, including in other components.
+> in Svelte, it doesn't update the DOM immediately. Instead, it **waits until the next microtask to see** if there are any other changes that need to be applied, including in other components.
 
 ```js
 await tick();
