@@ -1,0 +1,192 @@
+---
+layout: "../layouts/Layout.astro"
+title: "빌트인 시각효과"
+---
+
+import ComponentAndCode from "../components/ComponentAndCode.astro";
+import App from "../components/slide-11/App.svelte";
+import App2 from "../components/slide-11/App2.svelte";
+import App3 from "../components/slide-11/App3.svelte";
+import App4 from "../components/slide-11/App4.svelte";
+import App5 from "../components/slide-11/App5.svelte";
+
+# {frontmatter.title}
+
+## Motion
+
+### Tweened
+
+<ComponentAndCode>
+  <App slot="component" client:load />
+
+```svelte
+<script>
+  import { tweened } from "svelte/motion";
+  import { cubicOut } from "svelte/easing";
+
+  const progress = tweened(0, {
+    duration: 400,
+    easing: cubicOut,
+  });
+</script>
+
+<progress value={$progress} />
+
+<button on:click={() => progress.set(0)}> 0% </button>
+
+<button on:click={() => progress.set(0.25)}> 25% </button>
+
+<button on:click={() => progress.set(0.5)}> 50% </button>
+
+<button on:click={() => progress.set(0.75)}> 75% </button>
+
+<button on:click={() => progress.set(1)}> 100% </button>
+```
+
+</ComponentAndCode>
+
+### Spring
+
+<ComponentAndCode>
+  <App2 slot="component" client:load />
+
+```svelte
+<script>
+  import { spring } from "svelte/motion";
+
+  let coords = spring(
+    { x: 50, y: 50 },
+    {
+      stiffness: 0.1,
+      damping: 0.25,
+    }
+  );
+
+  let size = spring(10);
+</script>
+
+...
+
+<svg
+  width="200"
+  height="200"
+  viewBox="0 0 500 1000"
+  on:mousemove={(e) => coords.set({ x: e.clientX, y: e.clientY })}
+  on:mousedown={() => size.set(30)}
+  on:mouseup={() => size.set(10)}
+>
+  <circle cx={$coords.x} cy={$coords.y} r={$size} />
+</svg>
+```
+
+</ComponentAndCode>
+
+## Transition
+
+<ComponentAndCode>
+  <App3 slot="component" client:load />
+
+```svelte
+<script>
+  import { fly } from "svelte/transition";
+
+  let visible = true;
+  let status = "waiting...";
+</script>
+
+<p>status: {status}</p>
+
+<label>
+  <input type="checkbox" bind:checked={visible} />
+  visible
+</label>
+
+{#if visible}
+  <p
+    transition:fly={{ y: 200, duration: 2000 }}
+    on:introstart={() => (status = "intro started")}
+    on:outrostart={() => (status = "outro started")}
+    on:introend={() => (status = "intro ended")}
+    on:outroend={() => (status = "outro ended")}
+  >
+    Flies in and out
+  </p>
+{/if}
+```
+
+</ComponentAndCode>
+
+<ComponentAndCode>
+  <App4 slot="component" client:load />
+
+```svelte
+<script>
+  import { slide } from "svelte/transition";
+
+  let showItems = true;
+  let i = 5;
+  let items = ["one","two","three","four","five","six","seven","eight","nine","ten",];
+</script>
+
+<label>
+  <input type="checkbox" bind:checked={showItems} />
+  show list
+</label>
+
+<label>
+  <input type="range" bind:value={i} max="10" />
+</label>
+
+{#if showItems}
+  {#each items.slice(0, i) as item}
+    <div transition:slide|local>
+      {item}
+    </div>
+  {/each}
+{/if}
+
+<style>
+  div {
+    padding: 0.5em 0;
+    border-top: 1px solid #eee;
+  }
+</style>
+
+```
+
+</ComponentAndCode>
+
+<ComponentAndCode>
+  <App5 slot="component" client:load />
+
+```svelte
+<script>
+  import { fly } from "svelte/transition";
+
+  let number = 0;
+</script>
+
+<div>
+  The number is:
+  {#key number}
+    <span style="display: inline-block" in:fly={{ y: -20 }}>
+      {number}
+    </span>
+  {/key}
+</div>
+<br />
+<button
+  on:click={() => {
+    number += 1;
+  }}
+>
+  Increment
+</button>
+
+```
+
+</ComponentAndCode>
+
+## Animation
+
+<iframe width="100%" height="800px" src="https://svelte.dev/tutorial/animate" />
