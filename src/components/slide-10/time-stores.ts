@@ -1,4 +1,4 @@
-import { readable } from "svelte/store";
+import { readable, derived } from "svelte/store";
 
 export const time = readable(new Date(), function start(set) {
   const interval = setInterval(() => {
@@ -9,3 +9,9 @@ export const time = readable(new Date(), function start(set) {
     clearInterval(interval);
   };
 });
+
+const start = new Date();
+
+export const elapsed = derived(time, ($time: Date) =>
+  Math.round(($time.getTime() - start.getTime()) / 1000)
+);

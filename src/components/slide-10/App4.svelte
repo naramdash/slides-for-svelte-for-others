@@ -1,5 +1,5 @@
 <script>
-  import { time, elapsed } from "./time-stores2.ts";
+  import { time, elapsed } from "./time-stores.ts";
 
   const formatter = new Intl.DateTimeFormat("en", {
     hour12: true,
