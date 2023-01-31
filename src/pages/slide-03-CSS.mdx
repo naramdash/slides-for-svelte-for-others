@@ -4,10 +4,20 @@ title: 'CSS'
 ---
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
+import Compare from '../components/Compare.astro'
 import App from '../components/slide-03/App.svelte'
 import App2 from '../components/slide-03/App2.svelte'
 
 # {frontmatter.title}
+
+<Compare>
+- Angular
+    - [Component Styles](https://angular.io/guide/component-styles)
+- React: 
+    - [Adding Styles](https://beta.reactjs.org/learn#adding-styles)
+- Vue
+    - [Class and Style Bindings](https://vuejs.org/guide/essentials/class-and-style.html#class-and-style-bindings)
+</Compare>
 
 <ComponentAndCode>
     <App slot='component' client:load />

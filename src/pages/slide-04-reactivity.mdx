@@ -4,11 +4,20 @@ title: '상태의 변화'
 ---
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
+import Compare from '../components/Compare.astro'
 import App from '../components/slide-04/App.svelte'
 import App2 from '../components/slide-04/App2.svelte'
 
 # {frontmatter.title}
 
+<Compare>
+- Angular
+    - [Managing Data](https://angular.io/start/start-data)
+- React: 
+    - [State: A Component's Memory](https://beta.reactjs.org/learn/state-a-components-memory)
+- Vue
+    - [State Management](https://vuejs.org/guide/scaling-up/state-management.html#state-management)
+</Compare>
 
 <ComponentAndCode>
     <App slot='component' client:load />

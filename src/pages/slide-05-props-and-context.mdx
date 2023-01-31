@@ -4,11 +4,26 @@ title: '상태의 전파'
 ---
 
 import ComponentAndCode from '../components/ComponentAndCode.astro'
+import Compare from '../components/Compare.astro'
 import App from '../components/slide-05/App.svelte'
 import App2 from '../components/slide-05/App2.svelte'
 import App3 from '../components/slide-05/App3.svelte'
 
 # {frontmatter.title}
+
+<Compare>
+- Angular
+    - [Sharing data between child and parent directives and components](https://angular.io/guide/inputs-outputs)
+    - [Two-way binding](https://angular.io/guide/two-way-binding)
+- React: 
+    - [Passing Props to a Component](https://beta.reactjs.org/learn/passing-props-to-a-component)
+    - [Passing Data Deeply with Context](https://beta.reactjs.org/learn/passing-data-deeply-with-context)
+- Vue
+    - [Props](https://vuejs.org/guide/components/props.html#props)
+    - [Composition API: Dependency Injection](https://vuejs.org/api/composition-api-dependency-injection.html#composition-api-dependency-injection)
+    - [Component v-model](https://vuejs.org/guide/components/v-model.html)
+</Compare>
+
 
 ## Prop
 

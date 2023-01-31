@@ -3,55 +3,64 @@ layout: '../layouts/Layout.astro'
 title: '*.svelte 파일'
 ---
 import ComponentAndCode from '../components/ComponentAndCode.astro'
+import Compare from '../components/Compare.astro'
 import App from '../components/slide-02/App.svelte'
 
 # {frontmatter.title}
+
+<Compare>
+- Angular
+    - [Component](https://angular.io/guide/component-overview)
+- React: 
+    - [JSX](https://beta.reactjs.org/learn/writing-markup-with-jsx)
+    - [Styled Component](https://styled-components.com/)
+- Vue
+    - [Single File Component](https://vuejs.org/api/sfc-spec.html#sfc-syntax-specification)
+</Compare>
 
 <ComponentAndCode>
     <App slot='component' client:load />
     
 
-    <div>
-        ```svelte
-        // App.svelte
-        <script>
-          import Nested from "./Nested.svelte";
-        
-          let width = 500;
-          const src = `https://picsum.photos/${width}`;
-        
-          console.log("GO~ SHOT!");
-        </script>
-        
-        <label>
-          <input type="range" min="200" max="500" bind:value={width} />
-        </label>
-        
-        <Nested {src} {width} />
-        ```
+```svelte
+// App.svelte
+<script>
+  import Nested from "./Nested.svelte";
 
-        ```svelte
-        // Nested.svelte
-        <script lang="ts">
-          export let src: string;
-          export let width: number;
-          export let alternative = "sample image by random";
-        </script>
-        
-        <figure>
-          <img {src} {width} alt={alternative} loading="lazy" />
-          <figcaption>
-            {alternative}
-          </figcaption>
-        </figure>
-        
-        <style>
-          img {
-            border: 3px solid red;
-          }
-        </style>
-        ```
-    </div>
+  let width = 500;
+  const src = `https://picsum.photos/${width}`;
+
+  console.log("GO~ SHOT!");
+</script>
+
+<label>
+  <input type="range" min="200" max="500" bind:value={width} />
+</label>
+
+<Nested {src} {width} />
+```
+
+```svelte
+// Nested.svelte
+<script lang="ts">
+  export let src: string;
+  export let width: number;
+  export let alternative = "sample image by random";
+</script>
+
+<figure>
+  <img {src} {width} alt={alternative} loading="lazy" />
+  <figcaption>
+    {alternative}
+  </figcaption>
+</figure>
+
+<style>
+  img {
+    border: 3px solid red;
+  }
+</style>
+```
 
 </ComponentAndCode>
 
