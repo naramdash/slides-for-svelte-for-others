@@ -3,4 +3,249 @@ layout: '../layouts/Layout.astro'
 title: 'Slot'
 ---
 
+import ComponentAndCode from "../components/ComponentAndCode.astro";
+import App from "../components/slide-12/App.svelte";
+import App2 from "../components/slide-12/App2.svelte";
+import App3 from "../components/slide-12/App3.svelte";
+import App4 from "../components/slide-12/App4.svelte";
+
 # {frontmatter.title}
+
+<ComponentAndCode>
+<App slot="component" client:load />
+
+```svelte
+<script>
+  import Box from "./Box.svelte";
+</script>
+
+<Box>
+  <h2>Hello!</h2>
+  <p>This is a box. It can contain anything.</p>
+</Box>
+
+<Box />
+```
+
+```svelte
+<div class="box">
+  <slot>
+    <em>no content was provided</em>
+  </slot>
+</div>
+```
+</ComponentAndCode>
+
+## default slot & fallback
+
+create a slot with fallback
+
+```svelte
+<div class="box">
+  <slot>
+    <em>no content was provided</em>
+  </slot>
+</div>
+```
+
+using a slot
+
+```svelte
+<Box>
+  <h2>Hello!</h2>
+  <p>This is a box. It can contain anything.</p>
+</Box>
+```
+
+## named slot
+
+
+<ComponentAndCode>
+<App2 slot="component" client:load />
+
+```svelte
+<script>
+  import ContactCard from "./ContactCard.svelte";
+</script>
+
+<ContactCard>
+  <span slot="name"> P. Sherman </span>
+
+  <span slot="address">
+    42 Wallaby Way<br />
+    Sydney
+  </span>
+</ContactCard>
+```
+
+```svelte
+<article class="contact-card">
+  <h2>
+    <slot name="name">
+      <span class="missing">Unknown name</span>
+    </slot>
+  </h2>
+
+  <div class="address">
+    <slot name="address">
+      <span class="missing">Unknown address</span>
+    </slot>
+  </div>
+
+  <div class="email">
+    <slot name="email">
+      <span class="missing">Unknown email</span>
+    </slot>
+  </div>
+</article>
+```
+</ComponentAndCode>
+
+use name attribute
+
+```svelte
+<slot name="name">
+  <span class="missing">Unknown name</span>
+</slot>
+```
+
+```svelte
+<span slot="name"> P. Sherman </span>
+```
+
+## check slot injected
+
+<ComponentAndCode>
+<App3 slot="component" client:load />
+
+
+```svelte
+<script>
+  import Project from "./Project.svelte";
+  import Comment from "./Comment.svelte";
+</script>
+
+<h1>Projects</h1>
+
+<ul>
+  <li>
+    <Project title="Add TypeScript support" tasksCompleted={25} totalTasks={57}>
+      <div slot="comments">
+        <Comment name="Ecma Script" postedAt={new Date("2020-08-17T14:12:23")}>
+          <p>Those interface tests are now passing.</p>
+        </Comment>
+      </div>
+    </Project>
+  </li>
+  <li>
+    <Project title="Update documentation" tasksCompleted={18} totalTasks={21} />
+  </li>
+</ul>
+```
+
+```svelte
+<script>
+  export let title;
+  export let tasksCompleted = 0;
+  export let totalTasks = 0;
+</script>
+
+<article class:has-discussion={$$slots.comments}>
+  <div>
+    <h2>{title}</h2>
+    <p>{tasksCompleted}/{totalTasks} tasks completed</p>
+  </div>
+  {#if $$slots.comments}
+    <div class="discussion">
+      <h3>Comments</h3>
+      <slot name="comments" />
+    </div>
+  {/if}
+</article>
+```
+</ComponentAndCode>
+
+use `$$slots.[slot-name]`
+
+```svelte
+{#if $$slots.comments}
+  <div class="discussion">
+    <h3>Comments</h3>
+    <slot name="comments" />
+  </div>
+{/if}
+```
+
+## using container value at slot
+
+<ComponentAndCode>
+<App4 slot="component" client:load />
+
+```svelte
+<script>
+  import Hoverable from './Hoverable.svelte';
+</script>
+
+<Hoverable let:hovering={active}>
+  <div class:active>
+    {#if active}
+      <p>I am being hovered upon.</p>
+    {:else}
+      <p>Hover over me!</p>
+    {/if}
+  </div>
+</Hoverable>
+
+<Hoverable let:hovering={active}>
+  <div class:active>
+    {#if active}
+      <p>I am being hovered upon.</p>
+    {:else}
+      <p>Hover over me!</p>
+    {/if}
+  </div>
+</Hoverable>
+
+<Hoverable let:hovering={active}>
+  <div class:active>
+    {#if active}
+      <p>I am being hovered upon.</p>
+    {:else}
+      <p>Hover over me!</p>
+    {/if}
+  </div>
+</Hoverable>
+```
+
+```svelte
+<script>
+  let hovering;
+
+  function enter() {
+    hovering = true;
+  }
+
+  function leave() {
+    hovering = false;
+  }
+</script>
+
+<div on:mouseenter={enter} on:mouseleave={leave}>
+	<slot hovering={hovering}></slot>
+</div>
+```
+</ComponentAndCode>
+
+use prop at slot
+
+```svelte
+<slot hovering={hovering}></slot>
+```
+
+```svelte
+<Hoverable let:hovering={active}>
+  <div class:active>
+    {#if active}
+      <p>I am being hovered upon.</p>
+...
+```

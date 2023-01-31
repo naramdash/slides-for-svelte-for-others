@@ -3,4 +3,135 @@ layout: '../layouts/Layout.astro'
 title: '동일 컴포넌트간 상태 공유'
 ---
 
+import ComponentAndCode from "../components/ComponentAndCode.astro";
+import App from "../components/slide-14/App.svelte";
+
 # {frontmatter.title}
+
+static members?
+
+<ComponentAndCode>
+<App slot='component' client:load />
+```svelte
+<script>
+  import AudioPlayer, { stopAll } from "./AudioPlayer.svelte";
+</script>
+
+<button on:click={stopAll}> stop all audio </button>
+
+<!-- https://musopen.org/music/9862-the-blue-danube-op-314/ -->
+<AudioPlayer
+  src="https://sveltejs.github.io/assets/music/strauss.mp3"
+  title="The Blue Danube Waltz"
+  composer="Johann Strauss"
+  performer="European Archive"
+/>
+
+<!-- https://musopen.org/music/43775-the-planets-op-32/ -->
+<AudioPlayer
+  src="https://sveltejs.github.io/assets/music/holst.mp3"
+  title="Mars, the Bringer of War"
+  composer="Gustav Holst"
+  performer="USAF Heritage of America Band"
+/>
+
+<!-- https://musopen.org/music/8010-3-gymnopedies/ -->
+<AudioPlayer
+  src="https://sveltejs.github.io/assets/music/satie.mp3"
+  title="Gymnopédie no. 1"
+  composer="Erik Satie"
+  performer="Prodigal Procrastinator"
+/>
+
+<!-- https://musopen.org/music/2567-symphony-no-5-in-c-minor-op-67/ -->
+<AudioPlayer
+  src="https://sveltejs.github.io/assets/music/beethoven.mp3"
+  title="Symphony no. 5 in Cm, Op. 67 - I. Allegro con brio"
+  composer="Ludwig van Beethoven"
+  performer="European Archive"
+/>
+
+<!-- https://musopen.org/music/43683-requiem-in-d-minor-k-626/ -->
+<AudioPlayer
+  src="https://sveltejs.github.io/assets/music/mozart.mp3"
+  title="Requiem in D minor, K. 626 - III. Sequence - Lacrymosa"
+  composer="Wolfgang Amadeus Mozart"
+  performer="Markus Staab"
+/>
+```
+
+```svelte
+<script context="module">
+  const elements = new Set();
+
+  export function stopAll() {
+    elements.forEach((element) => {
+      element.pause();
+    });
+  }
+</script>
+
+<script>
+  import { onMount } from "svelte";
+
+  export let src;
+  export let title;
+  export let composer;
+  export let performer;
+
+  let audio;
+  let paused = true;
+
+  onMount(() => {
+    elements.add(audio);
+    return () => elements.delete(audio);
+  });
+
+  function stopOthers() {
+    elements.forEach((element) => {
+      if (element !== audio) element.pause();
+    });
+  }
+</script>
+
+<article class:playing={!paused}>
+  <h2>{title}</h2>
+  <p><strong>{composer}</strong> / performed by {performer}</p>
+
+  <audio bind:this={audio} bind:paused on:play={stopOthers} controls {src} />
+</article>
+```
+</ComponentAndCode>
+
+## `<script context='module'>`
+
+sharing state with same type components
+
+```svelte
+<script context="module">
+  const elements = new Set();
+
+  export function stopAll() {
+    elements.forEach((element) => {
+      element.pause();
+    });
+  }
+</script>
+```
+
+(un)register self in lifecycles
+
+```ts
+onMount(() => {
+  elements.add(audio);
+  return () => elements.delete(audio);
+});
+```
+
+call context value at other type component
+
+```svelte
+<script>
+  import AudioPlayer, { stopAll } from "./AudioPlayer.svelte";
+</script>
+```

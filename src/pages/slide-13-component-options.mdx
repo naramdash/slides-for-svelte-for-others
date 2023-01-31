@@ -1,0 +1,113 @@
+---
+layout: '../layouts/Layout.astro'
+title: '특수 Element와 최적화'
+---
+
+import ComponentAndCode from "../components/ComponentAndCode.astro";
+import App from "../components/slide-13/App.svelte";
+
+# {frontmatter.title}
+
+- 렌더링 관점
+  - `<svelte:self>`: 컴포넌트 자기자신을 부를때
+  - `<svelte:component>`: 다이나믹 컴포넌트를 사용, `<svelte:component this={dynamicComponent} />`
+  - `<svelte:element>`: 다이나믹 엘리먼트를 사용, `<svelte:element this={divOrSpan ? "div" : "span"} />`
+  - `<svelte:fragment>`: 부모 없는 엘리먼트 구성에 사용, ex) slot
+- 페이지 관점
+  - `<svelte:window>`: 컴포넌트가 window의 값을 바인딩하거나 이벤트 리스닝을 쉽게 추가/제거할 수 있게 해줌
+  - `<svelte:body>`: 컴포넌트가 body의 값을 바인딩하거나 이벤트 리스닝을 쉽게 추가/제거할 수 있게 해줌
+  - `<svelte:head>`: 컴포넌트가 head 내에 다른 엘리먼트를 *추가*할 수 있도록 해줌
+
+## `<svelte:option>`
+
+<ComponentAndCode>
+<App slot='component' client:load />
+
+```svelte
+<script>
+  import Todo from "./Todo.svelte";
+
+  let todos = [
+    { id: 1, done: true, text: "wash the car" },
+    { id: 2, done: false, text: "take the dog for a walk" },
+    { id: 3, done: false, text: "mow the lawn" },
+  ];
+
+  function toggle(toggled) {
+    todos = todos.map((todo) => {
+      if (todo === toggled) {
+        // return a new object
+        return {
+          id: todo.id,
+          text: todo.text,
+          done: !todo.done,
+        };
+      }
+
+      // return the same object
+      return todo;
+    });
+  }
+</script>
+
+<h2>Todos</h2>
+{#each todos as todo}
+  <Todo {todo} on:click={() => toggle(todo)} />
+{/each}
+```
+
+```svelte
+<svelte:options immutable={true} />
+
+<script>
+  import { afterUpdate } from "svelte";
+  import flash from "./flash.js";
+
+  export let todo;
+
+  let div;
+
+  afterUpdate(() => {
+    flash(div);
+  });
+</script>
+
+<!-- the text will flash red whenever
+     the `todo` object changes -->
+<div bind:this={div} on:click>
+  {todo.done ? "👍" : ""}
+  {todo.text}
+</div>
+```
+
+```js
+export default function flash(element) {
+  requestAnimationFrame(() => {
+    element.style.transition = "none";
+    element.style.color = "rgba(255,62,0,1)";
+    element.style.backgroundColor = "rgba(255,62,0,0.2)";
+
+    setTimeout(() => {
+      element.style.transition = "color 1s, background 1s";
+      element.style.color = "";
+      element.style.backgroundColor = "";
+    });
+  });
+}
+```
+</ComponentAndCode>
+
+
+### immutable
+
+> `immutable={true}` — you never use mutable data, so the compiler can do **simple referential equality checks** to determine if values have changed
+
+```svelte
+<svelte:options immutable={true} />
+```
+
+### etc
+
+- namespace: for other xmlnamespace like svg
+- tag: for custom-element
+- accessor: ??
