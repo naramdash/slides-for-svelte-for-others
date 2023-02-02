@@ -4,7 +4,7 @@ title: "앱 전역상태"
 ---
 
 import ComponentAndCode from "../components/ComponentAndCode.astro";
-import Compare from '../components/Compare.astro'
+import Compare from "../components/Compare.astro";
 import App from "../components/slide-10/App.svelte";
 import App2 from "../components/slide-10/App2.svelte";
 import App3 from "../components/slide-10/App3.svelte";
@@ -14,13 +14,11 @@ import App5 from "../components/slide-10/App5.svelte";
 # {frontmatter.title}
 
 <Compare>
-- Angular
-    - [Creating an injectable service](https://angular.io/guide/creating-injectable-service)
-- React: 
-    - [Recoil (library)](https://recoiljs.org/)
-- Vue
-    - [Reactivity Fundamentals](https://vuejs.org/guide/essentials/reactivity-fundamentals.html)
-    - [Pinia (library)](https://pinia.vuejs.org/)
+  - Angular - [Creating an injectable
+  service](https://angular.io/guide/creating-injectable-service) - React: -
+  [Recoil (library)](https://recoiljs.org/) - Vue - [Reactivity
+  Fundamentals](https://vuejs.org/guide/essentials/reactivity-fundamentals.html)
+  - [Pinia (library)](https://pinia.vuejs.org/)
 </Compare>
 
 ## Writable
@@ -246,9 +244,9 @@ function createCount() {
 
   return {
     subscribe,
-    increment: () => {},
-    decrement: () => {},
-    reset: () => {},
+    increment: () => update((n) => n + 1),
+    decrement: () => update((n) => n - 1),
+    reset: () => set(0),
   };
 }
 
